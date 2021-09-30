@@ -4,10 +4,10 @@
 #include <vector>
 using namespace std;
 
-// argc stores the count of how many arguments are passed via the command line
-// PLUS one for the name of the program
+// Function prototypes
+void printCurrBoard(char currBoard[], int numRows, int numColumns);
+void transform2DArray(vector<string> tempBoard, char& currBoard, int numRows, int numColumns);
 
-// argv is an array of C-strings where each argument is stored in argv as a C-string
 
 int main(int argc, char * argv[])
 {
@@ -16,21 +16,49 @@ int main(int argc, char * argv[])
      user input mode or file input mode OR
      if they didn't enter a filename */
 
-     string boardFile = argv[1]; // board file name is 2nd element of argv
-                                 // (executable file is 1st element)
+     string fileName = argv[1]; // board file name is 2nd element of argv
 
-     ifstream inFS; // Create input stream for file
+     // cout << "File name is: " << fileName << endl;
+
+     ifstream boardFile; // Create input stream for file
      vector<string> tempBoard; // Temporary vector to hold strings making up board file
-     inFS.open(boardFile); // Open file
-     if (!inFS.is_open()) { // Check that file opened successfully
+     string currRow;
+     boardFile.open(fileName); // Open file
+     if (!boardFile.is_open()) { // Check that file opened correctly
+       cout << "Encountered an error opening the board file" << endl;
        return 1;
      }
+     while (!boardFile.fail()) { // Read in boardFile line by line and store each string line in tempBoard
+       getline(boardFile, currRow);
+       tempBoard.push_back(currRow);
+     }
 
+     // Determine # of rows and # of columns of input board
+     int numRows = tempBoard.size();
+     int numColumns = tempBoard.at(0).length();
 
-
-     // Construct 2-D array using input board file
-     // Must first determine the dimensions
-
+     // Construct 2-D character array using tempBoard
+     char currBoard[numRows][numColumns];
+     transform2DArray(tempBoard, currBoard, numRows, numColumns);
+     printCurrBoard(currBoard, numRows, numColumns);
 
   return 0;
+}
+
+void printCurrBoard(char currBoard[], int numRows, int numColumns) {
+  for (int i = 0; i < numRows; ++i) {
+    for (int j = 0; j < numColumns; ++j) {
+      cout << currBoard[i][j];
+    }
+    cout << endl;
+  }
+}
+
+void transform2DArray(vector<string> tempBoard, char& currBoard, int numRows, int numColumns) {
+  for (int i = 0; i < numRows; ++i) {
+    string rowString = tempBoard.at(0);
+    for (int j = 0; j < numColumns; ++j) {
+      currBoard[i][j] = rowString.at(j);
+    }
+  }
 }

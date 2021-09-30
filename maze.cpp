@@ -5,9 +5,7 @@
 using namespace std;
 
 // Function prototypes
-void printCurrBoard(char currBoard[], int numRows, int numColumns);
-void transform2DArray(vector<string> tempBoard, char& currBoard, int numRows, int numColumns);
-
+void printCurrBoard(vector<vector<char>> currBoard, int numRows, int numColumns);
 
 int main(int argc, char * argv[])
 {
@@ -34,31 +32,32 @@ int main(int argc, char * argv[])
      }
 
      // Determine # of rows and # of columns of input board
-     int numRows = tempBoard.size();
+     int numRows = tempBoard.size() - 1; // Need to subtract 1 for some reason; something wrong with file reading
+
      int numColumns = tempBoard.at(0).length();
 
-     // Construct 2-D character array using tempBoard
-     char currBoard[numRows][numColumns];
-     transform2DArray(tempBoard, currBoard, numRows, numColumns);
+     // Construct 2-D vector array using tempBoard
+     vector<vector<char>> currBoard;
+
+     currBoard.resize(numRows, vector<char>(numColumns, '.'));
+
+     for (int i = 0; i < numRows; ++i) { // I want to be able to do this in a function
+       string rowString = tempBoard.at(i); // But I was having difficulties passing the 2-D vector by reference
+       for (int j = 0; j < numColumns; ++j) {
+         currBoard[i][j] = rowString.at(j);
+       }
+     }
+
      printCurrBoard(currBoard, numRows, numColumns);
 
   return 0;
 }
 
-void printCurrBoard(char currBoard[], int numRows, int numColumns) {
+void printCurrBoard(vector<vector<char>> currBoard, int numRows, int numColumns) {
   for (int i = 0; i < numRows; ++i) {
     for (int j = 0; j < numColumns; ++j) {
       cout << currBoard[i][j];
     }
     cout << endl;
-  }
-}
-
-void transform2DArray(vector<string> tempBoard, char& currBoard, int numRows, int numColumns) {
-  for (int i = 0; i < numRows; ++i) {
-    string rowString = tempBoard.at(0);
-    for (int j = 0; j < numColumns; ++j) {
-      currBoard[i][j] = rowString.at(j);
-    }
   }
 }

@@ -1,8 +1,5 @@
-maze: maze.o
-	g++ maze.o -o maze
-
-maze.o: maze.cpp
-	g++ -c maze.cpp
+maze: maze.cpp
+	g++ -Wall -Werror -std=c++14 maze.cpp -o maze
 
 clean:
 	rm *.o maze

@@ -40,15 +40,90 @@ int main(int argc, char * argv[])
      vector<vector<char>> currBoard;
 
      currBoard.resize(numRows, vector<char>(numColumns, '.'));
+     int currR;
+     int currC;
+     bool gameDone = false;
 
      for (int i = 0; i < numRows; ++i) { // I want to be able to do this in a function
        string rowString = tempBoard.at(i); // But I was having difficulties passing the 2-D vector by reference
        for (int j = 0; j < numColumns; ++j) {
          currBoard[i][j] = rowString.at(j);
+         if (rowString.at(j) == '@') { // Determine starting position in vector array
+           currR = i;
+           currC = j;
+         }
        }
      }
 
-     printCurrBoard(currBoard, numRows, numColumns);
+     // USER INPUT
+     while (!(gameDone)) {
+
+       // Variables
+       int prevR;
+       int prevC;
+
+       // 1) Display current board
+       printCurrBoard(currBoard, numRows, numColumns);
+
+       // 2) Get user's directional command
+       char userMove;
+       cout << "> ";
+       cin >> userMove;
+
+       // 3) Process move
+       if (userMove == 'a') { // Move left
+         if ((currC == 0) || (currBoard[currR][currC - 1] == '#')) { // Check that the player isn't in the leftmost column
+           cout << "You can't move there.";                         // and that the desired spot isn't a wall
+         }
+         else {
+           prevC = currC;
+           currC = currC - 1;
+           currBoard[currR][currC] = '@';
+           currBoard[currR][prevC] = '.';
+         }
+       }
+       else if (userMove == 'w') { // Move up
+         if ((currR == 0) || (currBoard[currR - 1][currC] == '#')) { // Check that the player isn't in the first row
+           cout << "You can't move there." << endl;;                         // and that the desired spot isn't a wall
+         }
+         else {
+           prevR = currR;
+           currR = currR - 1;
+           currBoard[currR][currC] = '@';
+           currBoard[prevR][currC] = '.';
+         }
+       }
+       else if (userMove == 'd') { // Move right
+         if ((currC == numColumns - 1) || (currBoard[currR][currC + 1] == '#')) { // Check that the player isn't in the rightmost column
+           cout << "You can't move there." << endl;;                               // and that the desired spot isn't a wall
+         }
+         else {
+           prevC = currC;
+           currC = currC + 1;
+           currBoard[currR][currC] = '@';
+           currBoard[currR][prevC] = '.';
+         }
+       }
+       else if (userMove == 's') { // Move down
+         if ((currR == numRows - 1) || (currBoard[currR + 1][currC] == '#')) { // Check that the player isn't in the first row
+           cout << "You can't move there." << endl;                         // and that the desired spot isn't a wall
+         }
+         else {
+           prevR = currR;
+           currR = currR + 1;
+           currBoard[currR][currC] = '@';
+           currBoard[prevR][currC] = '.';
+         }
+       }
+       else if (userMove == 'q') { // Quit the game
+         cout << "Game quit." << endl;
+         gameDone = true;
+       }
+       else {
+         cout << "Not a valid command.";
+       }
+
+     }
 
   return 0;
 }

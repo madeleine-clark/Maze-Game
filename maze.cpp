@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <string>
 #include <vector>
@@ -192,7 +193,7 @@ void playUserInputMode(vector<vector<char>> currBoard, int numRows, int numColum
     switch (userMove) {
       case 'a': // Move left
           if ((currC == 0) || (currBoard[currR][currC - 1] == '#')) { // Check that the player isn't in the leftmost column
-            cout << "You can't move there."; // and that the desired spot isn't a wall
+            cout << "You can't move there." << endl; // and that the desired spot isn't a wall
           }
           else {
             prevC = currC;
@@ -286,10 +287,26 @@ void buildBoard(vector<string> tempBoard, vector<vector<char>> &currBoard, int n
 }
 
 void printCurrBoard(vector<vector<char>> currBoard, int numRows, int numColumns) { // NEED TO PRINT OUT BORDERS STILL
+
+  for (int a = 0; a < numColumns + 2; ++a) {
+    cout << "-";
+  }
+
+  cout << endl;
+
   for (int i = 0; i < numRows; ++i) {
+    cout << "|";
     for (int j = 0; j < numColumns; ++j) {
       cout << currBoard[i][j];
     }
-    cout << endl;
+    cout << "|" << endl;
   }
+
+  for (int b = 0; b < numColumns + 2; ++b) {
+    cout << "-";
+  }
+
+  cout << endl;
+
+
 }

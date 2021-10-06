@@ -5,7 +5,7 @@
 #include <vector>
 using namespace std;
 
-// Function prototypes
+// Function declarations
 void printCurrBoard(vector<vector<char>> currBoard, int numRows, int numColumns);
 void buildBoard(vector<string> tempBoard, vector<vector<char>> &currBoard, int numRows, int numColumns, int &currR, int &currC);
 void playUserInputMode(vector<vector<char>> currBoard, int numRows, int numColumns, int currR, int currC);
@@ -21,30 +21,29 @@ int main(int argc, char * argv[]) {
   }
   else if (argc != 3) {
     cerr << "Wrong number of arguments." << endl;
-    return 1; // ?CAN I HAVE MULTIPLE RETURN STATEMENTS IN MAIN?
+    return 1;
   }
 
-  // 2) Open and process board text file
+  // 2) Open board file and temporarily store as vector array of strings
   vector<string> tempBoard;
   string currLine;
 
-  string file1Name = argv[1]; // Board file name is 2nd element of argv
-  ifstream boardFile; // Input stream for board file
+  string file1Name = argv[1];
+  ifstream boardFile;
 
-  boardFile.open(file1Name); // Open board file
+  boardFile.open(file1Name);
 
-  if (!boardFile.is_open()) { // Check that  board file opened correctly
+  if (!boardFile.is_open()) {
     cerr << "Could not open the board file." << endl;
     return 1;
   }
 
-  while (!boardFile.fail()) { // ?CONFUSED ABOUT DIFFERENCE BTW .fail(), ,eof(), etc.?
-    getline(boardFile, currLine);
+  while (getline(boardFile, currLine)) {
     tempBoard.push_back(currLine);
   }
 
-  // 3) Build 2-D vector array to store board
-  int numRows = tempBoard.size() - 1; // ?WHY IS NUMROWS OVER BY 1?
+  // 3) Build 2-D vector array of characters to represent the board
+  int numRows = tempBoard.size();
   int numColumns = tempBoard.at(0).size();
   int currR;
   int currC;
@@ -70,15 +69,15 @@ void playFileInputMode(string file2Name, vector<vector<char>> currBoard, int num
   bool invalidInput = false;
 
   char currCommand;
-  ifstream inputsFile; // Input stream for inputs file
+  ifstream inputsFile;
 
-  inputsFile.open(file2Name); // Open inputs file
+  inputsFile.open(file2Name);
 
-  if (!inputsFile.is_open()) { // Check that inputs file opened correctly
+  if (!inputsFile.is_open()) {
     cerr << "Could not open the inputs file." << endl;
   }
 
-  while (inputsFile >> currCommand) { // ?CONFUSED ABOUT DIFFERENCE BTW .fail(), ,eof(), etc.?
+  while (inputsFile >> currCommand) {
     int prevR;
     int prevC;
 
@@ -271,7 +270,7 @@ void playUserInputMode(vector<vector<char>> currBoard, int numRows, int numColum
   }
 }
 
-void buildBoard(vector<string> tempBoard, vector<vector<char>> &currBoard, int numRows, int numColumns, int &currR, int &currC) {
+void buildBoard(vector<string> tempBoard, vector<vector<char>> &currBoard, int numRows, int numColumns, int &currR, int &currC) { // currBoard, currR, and currC are all pass by reference
   currBoard.resize(numRows, vector<char>(numColumns, '.'));
 
   for (int i = 0; i < numRows; ++i) {

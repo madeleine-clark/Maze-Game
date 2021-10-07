@@ -10,6 +10,8 @@ void printCurrBoard(vector<vector<char>> currBoard, int numRows, int numColumns)
 void buildBoard(vector<string> tempBoard, vector<vector<char>> &currBoard, int numRows, int numColumns, int &currR, int &currC);
 void playUserInputMode(vector<vector<char>> currBoard, int numRows, int numColumns, int currR, int currC);
 void playFileInputMode(string file2Name, vector<vector<char>> currBoard, int numRows, int numColumns, int currR, int currC);
+void processMove(vector<vector<char>> &currBoard, char currCommand, int numRows, int numColumns, int &currR, int &currC, int &prevR, int &prevC, bool &gameWon, bool &hitWall, bool &invalidInput);
+
 
 int main(int argc, char * argv[]) {
   // Two possible modes: user input mode and file input mode
@@ -34,7 +36,7 @@ int main(int argc, char * argv[]) {
   boardFile.open(file1Name);
 
   if (!boardFile.is_open()) {
-    cerr << "Could not open the board file." << endl;
+    cerr << "Could not open board file." << endl;
     return 1;
   }
 
@@ -42,7 +44,7 @@ int main(int argc, char * argv[]) {
     tempBoard.push_back(currLine);
   }
 
-  // 3) Build 2-D vector array of characters to represent the board
+  // 3) Build 2-D vector array of characters to store current board
   int numRows = tempBoard.size();
   int numColumns = tempBoard.at(0).size();
   int currR;
@@ -61,6 +63,78 @@ int main(int argc, char * argv[]) {
   return 0;
 }
 
+void processMove(vector<vector<char>> &currBoard, char currCommand, int numRows, int numColumns, int &currR, int &currC, int &prevR, int &prevC, bool &gameWon, bool &hitWall, bool &invalidInput) {
+
+  switch (currCommand) {
+    case 'a': // Move left
+        if ((currC == 0) || (currBoard[currR][currC - 1] == '#')) { // Check that the player isn't in the leftmost column
+          hitWall = true;
+        }
+        else {
+          prevC = currC;
+          currC = currC - 1;
+
+          if (currBoard[currR][currC] == '$') {
+            gameWon = true;
+          }
+
+          currBoard[currR][currC] = '@';
+          currBoard[currR][prevC] = '.';
+        }
+        break;
+    case 'w': // Move up
+        if ((currR == 0) || (currBoard[currR - 1][currC] == '#')) { // Check that the player isn't in the first row
+          hitWall = true;                         // and that the desired spot isn't a wall
+        }
+        else {
+          prevR = currR;
+          currR = currR - 1;
+
+          if (currBoard[currR][currC] == '$') {
+            gameWon = true;
+          }
+
+          currBoard[currR][currC] = '@';
+          currBoard[prevR][currC] = '.';
+        }
+        break;
+    case 'd': // Move right
+        if ((currC == numColumns - 1) || (currBoard[currR][currC + 1] == '#')) { // Check that the player isn't in the rightmost column
+          hitWall = true;                              // and that the desired spot isn't a wall
+        }
+        else {
+          prevC = currC;
+          currC = currC + 1;
+
+          if (currBoard[currR][currC] == '$') {
+            gameWon = true;
+          }
+
+          currBoard[currR][currC] = '@';
+          currBoard[currR][prevC] = '.';
+        }
+        break;
+    case 's': // Move down
+        if ((currR == numRows - 1) || (currBoard[currR + 1][currC] == '#')) { // Check that the player isn't in the first row
+          hitWall = true;                         // and that the desired spot isn't a wall
+        }
+        else {
+          prevR = currR;
+          currR = currR + 1;
+
+          if (currBoard[currR][currC] == '$') {
+            gameWon = true;
+          }
+
+          currBoard[currR][currC] = '@';
+          currBoard[prevR][currC] = '.';
+        }
+        break;
+    default:  // Invalid command
+        invalidInput = true;
+  }
+}
+
 void playFileInputMode(string file2Name, vector<vector<char>> currBoard, int numRows, int numColumns, int currR, int currC) {
 
   // Ending circumstances
@@ -74,82 +148,14 @@ void playFileInputMode(string file2Name, vector<vector<char>> currBoard, int num
   inputsFile.open(file2Name);
 
   if (!inputsFile.is_open()) {
-    cerr << "Could not open the inputs file." << endl;
+    cerr << "Could not open inputs file." << endl;
   }
 
   while (inputsFile >> currCommand) {
     int prevR;
     int prevC;
 
-    switch (currCommand) {
-      case 'a': // Move left
-          if ((currC == 0) || (currBoard[currR][currC - 1] == '#')) { // Check that the player isn't in the leftmost column
-            hitWall = true;
-          }
-          else {
-            prevC = currC;
-            currC = currC - 1;
-
-            if (currBoard[currR][currC] == '$') {
-              gameWon = true;
-            }
-
-            currBoard[currR][currC] = '@';
-            currBoard[currR][prevC] = '.';
-          }
-          break;
-      case 'w': // Move up
-          if ((currR == 0) || (currBoard[currR - 1][currC] == '#')) { // Check that the player isn't in the first row
-            hitWall = true;                         // and that the desired spot isn't a wall
-          }
-          else {
-            prevR = currR;
-            currR = currR - 1;
-
-            if (currBoard[currR][currC] == '$') {
-              gameWon = true;
-            }
-
-            currBoard[currR][currC] = '@';
-            currBoard[prevR][currC] = '.';
-          }
-          break;
-      case 'd': // Move right
-          if ((currC == numColumns - 1) || (currBoard[currR][currC + 1] == '#')) { // Check that the player isn't in the rightmost column
-            hitWall = true;                              // and that the desired spot isn't a wall
-          }
-          else {
-            prevC = currC;
-            currC = currC + 1;
-
-            if (currBoard[currR][currC] == '$') {
-              gameWon = true;
-            }
-
-            currBoard[currR][currC] = '@';
-            currBoard[currR][prevC] = '.';
-          }
-          break;
-      case 's': // Move down
-          if ((currR == numRows - 1) || (currBoard[currR + 1][currC] == '#')) { // Check that the player isn't in the first row
-            hitWall = true;                         // and that the desired spot isn't a wall
-          }
-          else {
-            prevR = currR;
-            currR = currR + 1;
-
-            if (currBoard[currR][currC] == '$') {
-              gameWon = true;
-            }
-
-            currBoard[currR][currC] = '@';
-            currBoard[prevR][currC] = '.';
-          }
-          break;
-      default:  // Invalid command
-          invalidInput = true;
-          break;
-    }
+    processMove(currBoard, currCommand, numRows, numColumns, currR, currC, prevR, prevC, gameWon, hitWall, invalidInput);
 
     if (gameWon) {
       cout << "That input results in a victory." << endl;
@@ -171,101 +177,39 @@ void playFileInputMode(string file2Name, vector<vector<char>> currBoard, int num
 }
 
 void playUserInputMode(vector<vector<char>> currBoard, int numRows, int numColumns, int currR, int currC) {
-  bool gameDone = false;
-  bool gameWon = false;
 
-  while (!(gameDone) && !(gameWon)) {
-    // Variables
+  bool gameWon = false;
+  bool hitWall = false;
+  bool invalidInput = false;
+
+  while (!(gameWon)) {
     int prevR;
     int prevC;
 
-    // 1) Display current board
     printCurrBoard(currBoard, numRows, numColumns);
 
-    // 2) Get user's directional command
-    char userMove;
+    char currCommand;
     cout << "> ";
-    cin >> userMove;
+    cin >> currCommand;
 
-    // 3) Process move
-    // NEED TO ADD WHAT HAPPENDS WHEN THEY WIN
-    switch (userMove) {
-      case 'a': // Move left
-          if ((currC == 0) || (currBoard[currR][currC - 1] == '#')) { // Check that the player isn't in the leftmost column
-            cout << "You can't move there." << endl; // and that the desired spot isn't a wall
-          }
-          else {
-            prevC = currC;
-            currC = currC - 1;
-
-            if (currBoard[currR][currC] == '$') {
-              gameWon = true;
-            }
-
-            currBoard[currR][currC] = '@';
-            currBoard[currR][prevC] = '.';
-          }
-          break;
-      case 'w': // Move up
-          if ((currR == 0) || (currBoard[currR - 1][currC] == '#')) { // Check that the player isn't in the first row
-            cout << "You can't move there." << endl;;                         // and that the desired spot isn't a wall
-          }
-          else {
-            prevR = currR;
-            currR = currR - 1;
-
-            if (currBoard[currR][currC] == '$') {
-              gameWon = true;
-            }
-
-            currBoard[currR][currC] = '@';
-            currBoard[prevR][currC] = '.';
-          }
-          break;
-      case 'd': // Move right
-          if ((currC == numColumns - 1) || (currBoard[currR][currC + 1] == '#')) { // Check that the player isn't in the rightmost column
-            cout << "You can't move there." << endl;                               // and that the desired spot isn't a wall
-          }
-          else {
-            prevC = currC;
-            currC = currC + 1;
-
-            if (currBoard[currR][currC] == '$') {
-              gameWon = true;
-            }
-
-            currBoard[currR][currC] = '@';
-            currBoard[currR][prevC] = '.';
-          }
-          break;
-      case 's': // Move down
-          if ((currR == numRows - 1) || (currBoard[currR + 1][currC] == '#')) { // Check that the player isn't in the first row
-            cout << "You can't move there." << endl;                         // and that the desired spot isn't a wall
-          }
-          else {
-            prevR = currR;
-            currR = currR + 1;
-
-            if (currBoard[currR][currC] == '$') {
-              gameWon = true;
-            }
-
-            currBoard[currR][currC] = '@';
-            currBoard[prevR][currC] = '.';
-          }
-          break;
-      case 'q': // Quit the game
-          cout << "You quit the game." << endl;
-          gameDone = true;
-          break;
-      default:  // Invalid command
-          cout << "Invalid input." << endl;
-          break;
+    if (currCommand == 'q') {
+      cout << "You quit the game." << endl;
+      break;
     }
+
+    processMove(currBoard, currCommand, numRows, numColumns, currR, currC, prevR, prevC, gameWon, hitWall, invalidInput);
 
     if (gameWon) {
       printCurrBoard(currBoard, numRows, numColumns);
       cout << "You won the game." << endl;
+    }
+    else if (hitWall) {
+      cout << "You can't move there." << endl;
+      hitWall = false;
+    }
+    else if (invalidInput) {
+      cout << "Invalid input." << endl;
+      invalidInput = false;
     }
   }
 }
@@ -285,13 +229,9 @@ void buildBoard(vector<string> tempBoard, vector<vector<char>> &currBoard, int n
   }
 }
 
-void printCurrBoard(vector<vector<char>> currBoard, int numRows, int numColumns) { // NEED TO PRINT OUT BORDERS STILL
+void printCurrBoard(vector<vector<char>> currBoard, int numRows, int numColumns) {
 
-  for (int a = 0; a < numColumns + 2; ++a) {
-    cout << "-";
-  }
-
-  cout << endl;
+  cout << setfill('-') << setw(numColumns + 2) << '-' << endl;
 
   for (int i = 0; i < numRows; ++i) {
     cout << "|";
@@ -301,11 +241,6 @@ void printCurrBoard(vector<vector<char>> currBoard, int numRows, int numColumns)
     cout << "|" << endl;
   }
 
-  for (int b = 0; b < numColumns + 2; ++b) {
-    cout << "-";
-  }
-
-  cout << endl;
-
+  cout << setfill('-') << setw(numColumns + 2) << '-' << endl;
 
 }

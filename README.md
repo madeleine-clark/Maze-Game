@@ -27,7 +27,7 @@ If the user enters an unsupported command, a warning message is printed and they
 The user can continue making moves until they win or quit the game. 
 
 Here's an example of a typical user-mode game:
-
+```
 $ cat boards / board1 . txt
 2 ..# @ .
 3 #.#..
@@ -101,5 +101,6 @@ $ cat boards / board1 . txt
 71 > s
 72 ---- ---
 73 |..#..|
+```
 
 ## File Mode

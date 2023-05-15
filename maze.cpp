@@ -242,5 +242,5 @@ void printCurrBoard(vector<vector<char>> currBoard, int numRows, int numColumns)
   }
 
   cout << setfill('-') << setw(numColumns + 2) << '-' << endl;
-
+  
 }

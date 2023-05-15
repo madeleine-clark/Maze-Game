@@ -138,6 +138,7 @@ Here's an example of a winning game in file-input mode:
 17 a
 18 $ ./maze boards/board2.txt inputs/inputs3.txt
 19 That input results in a victory.
+```
 ### Ex. 2
 Here's an example of a losing game in file-input mode:
 ```
@@ -159,5 +160,4 @@ Here's an example of a losing game in file-input mode:
 16 s
 17 $ ./maze boards/board2.txt inputs/inputs4.txt
 18 That input does not reach the end.
-```
 ```

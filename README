@@ -10,6 +10,7 @@ The maze is a 7x6 `char` grid that looks like this:
 |....#|
 |#.#.$|
 ---- ---
+```
 
 ## User Mode
 
